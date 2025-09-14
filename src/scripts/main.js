@@ -2,19 +2,25 @@
 
 function waitFor(element, eventName) {
   return new Promise((resolve, reject) => {
-    if (element) {
-      const handleEv = () => {
-        resolve(`It was ${eventName} on the element: ${element.nodeName}, id: ${element.id}.`);
-
-        element.removeEventListener(eventName, handleEv);
-      }
-      element.addEventListener(eventName, handleEv);
+    if (!element) {
+      reject(new Error(`No element - ${element}`));
+      return;
     }
-  })
+
+    const handleEv = () => {
+      element.removeEventListener(eventName, handleEv);
+      resolve(
+        `It was ${eventName} on the element: ${element.nodeName}, id: ${element.id}.`,
+      );
+    };
+
+    element.addEventListener(eventName, handleEv);
+  });
 }
 
 const printMessage = (message) => {
   const messageEl = document.createElement('div');
+
   messageEl.className = 'message';
   messageEl.textContent = message;
 
